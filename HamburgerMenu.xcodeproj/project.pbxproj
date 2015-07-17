@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E134CB21B58CA8400107D76 /* HMNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E134CB11B58CA8400107D76 /* HMNavigationController.swift */; };
 		0EC0FB961B58C7D90021F862 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC0FB951B58C7D90021F862 /* AppDelegate.swift */; };
 		0EC0FB981B58C7D90021F862 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC0FB971B58C7D90021F862 /* ViewController.swift */; };
 		0EC0FB9B1B58C7D90021F862 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0EC0FB991B58C7D90021F862 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E134CB11B58CA8400107D76 /* HMNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMNavigationController.swift; sourceTree = "<group>"; };
 		0EC0FB901B58C7D90021F862 /* HamburgerMenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HamburgerMenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC0FB941B58C7D90021F862 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC0FB951B58C7D90021F862 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -56,6 +58,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0E134CB31B58CA8C00107D76 /* HMKIT */ = {
+			isa = PBXGroup;
+			children = (
+				0E134CB11B58CA8400107D76 /* HMNavigationController.swift */,
+			);
+			name = HMKIT;
+			sourceTree = "<group>";
+		};
 		0EC0FB871B58C7D90021F862 = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +87,7 @@
 		0EC0FB921B58C7D90021F862 /* HamburgerMenu */ = {
 			isa = PBXGroup;
 			children = (
+				0E134CB31B58CA8C00107D76 /* HMKIT */,
 				0EC0FB951B58C7D90021F862 /* AppDelegate.swift */,
 				0EC0FB971B58C7D90021F862 /* ViewController.swift */,
 				0EC0FB991B58C7D90021F862 /* Main.storyboard */,
@@ -215,6 +226,7 @@
 			files = (
 				0EC0FB981B58C7D90021F862 /* ViewController.swift in Sources */,
 				0EC0FB961B58C7D90021F862 /* AppDelegate.swift in Sources */,
+				0E134CB21B58CA8400107D76 /* HMNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
