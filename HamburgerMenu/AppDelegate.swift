@@ -22,19 +22,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         let manager = HMViewControllerManager.sharedInstance
-        manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")
-        manager.closeMenuButtonImage = UIImage(named: "hamburgerMenuIcon")
+        manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)
+        manager.closeMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)
         manager.titles = ["Home",
             "About Us",
             "Our Service",
             "Contact Us",
             "Help?"]
-        manager.images = [UIImage(named: "hamburgerMenuIcon")!,
-            UIImage(named: "hamburgerMenuIcon")!,
-            UIImage(named: "hamburgerMenuIcon")!,
-            UIImage(named: "hamburgerMenuIcon")!,
-            UIImage(named: "hamburgerMenuIcon")!]
-        
+        manager.images = [UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
+            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
+            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
+            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
+            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)]
+        // HMMenuViewController NO using Storyboard
+        // manager.menuViewController = HMMenuViewController()
+        // HMMenuViewController using Storyboard
+        manager.menuViewController = UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuController") as! HMMenuViewController
         if let navigationController = window?.rootViewController as? UINavigationController {
             manager.navigationController = navigationController
             manager.viewControllers = NSArray(objects: navigationController.viewControllers.first!,

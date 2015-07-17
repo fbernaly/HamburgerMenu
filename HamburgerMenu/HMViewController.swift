@@ -8,11 +8,11 @@
 
 import UIKit
 
-class HMViewController: UIViewController {
+class HMViewController: UIViewController, HMMenuViewControllerDelegate {
     
     var hamburgerMenuButtonImage: UIImage? {
         didSet {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(image:hamburgerMenuButtonImage, style:.Plain, target:self, action:"showMenu")
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image:hamburgerMenuButtonImage, style:.Plain, target:self, action:"showMenuViewController")
             navigationItem.leftBarButtonItem?.tintColor = UIColor.blueColor()
         }
     }
@@ -27,7 +27,18 @@ class HMViewController: UIViewController {
 
     // MARK: - Navigation helper functions
     
-    func showMenu () {
-        
+    func showMenuViewController () {
+        if let menuController = HMViewControllerManager.sharedInstance.menuViewController as? HMMenuViewController {
+            menuController.delegate = self
+            menuController.showMenuFromController(self)
+        }
+    }
+    
+    func setNewViewController (navController:UINavigationController, fromIndexPath indexPath:NSIndexPath) {
+        if indexPath.row < HMViewControllerManager.sharedInstance.viewControllers?.count {
+            if let viewController = HMViewControllerManager.sharedInstance.viewControllers?.objectAtIndex(indexPath.row) as? UIViewController {
+                navigationController?.viewControllers = [viewController]
+            }
+        }
     }
 }

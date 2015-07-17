@@ -16,6 +16,7 @@
 		0EC0FB9D1B58C7D90021F862 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0EC0FB9C1B58C7D90021F862 /* Images.xcassets */; };
 		0EC0FBA01B58C7D90021F862 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC0FB9E1B58C7D90021F862 /* LaunchScreen.xib */; };
 		0EC0FBAC1B58C7D90021F862 /* HamburgerMenuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC0FBAB1B58C7D90021F862 /* HamburgerMenuTests.swift */; };
+		939F9EE31B59731D004E4845 /* HMMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939F9EE21B59731D004E4845 /* HMMenuViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		0EC0FBA51B58C7D90021F862 /* HamburgerMenuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HamburgerMenuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC0FBAA1B58C7D90021F862 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC0FBAB1B58C7D90021F862 /* HamburgerMenuTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HamburgerMenuTests.swift; sourceTree = "<group>"; };
+		939F9EE21B59731D004E4845 /* HMMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMMenuViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				0E70CDA21B58DA9700009BD1 /* HMViewControllerManager.swift */,
 				0E70CD9E1B58D18100009BD1 /* HMViewController.swift */,
 				0E70CDA01B58D91800009BD1 /* HMTableViewController.swift */,
+				939F9EE21B59731D004E4845 /* HMMenuViewController.swift */,
 			);
 			name = HMKIT;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				939F9EE31B59731D004E4845 /* HMMenuViewController.swift in Sources */,
 				0E70CD9F1B58D18100009BD1 /* HMViewController.swift in Sources */,
 				0EC0FB961B58C7D90021F862 /* AppDelegate.swift in Sources */,
 				0E70CDA11B58D91800009BD1 /* HMTableViewController.swift in Sources */,
@@ -363,7 +367,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Yair Jared Ramirez Sandoval (T6F7GKE6JZ)";
 				INFOPLIST_FILE = HamburgerMenu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -375,7 +379,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Yair Jared Ramirez Sandoval (T6F7GKE6JZ)";
 				INFOPLIST_FILE = HamburgerMenu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
