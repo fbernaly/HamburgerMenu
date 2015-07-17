@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0E134CB21B58CA8400107D76 /* HMNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E134CB11B58CA8400107D76 /* HMNavigationController.swift */; };
+		0E70CD9F1B58D18100009BD1 /* HMViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E70CD9E1B58D18100009BD1 /* HMViewController.swift */; };
+		0E70CDA11B58D91800009BD1 /* HMTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E70CDA01B58D91800009BD1 /* HMTableViewController.swift */; };
 		0EC0FB961B58C7D90021F862 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC0FB951B58C7D90021F862 /* AppDelegate.swift */; };
-		0EC0FB981B58C7D90021F862 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC0FB971B58C7D90021F862 /* ViewController.swift */; };
 		0EC0FB9B1B58C7D90021F862 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0EC0FB991B58C7D90021F862 /* Main.storyboard */; };
 		0EC0FB9D1B58C7D90021F862 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0EC0FB9C1B58C7D90021F862 /* Images.xcassets */; };
 		0EC0FBA01B58C7D90021F862 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0EC0FB9E1B58C7D90021F862 /* LaunchScreen.xib */; };
@@ -28,10 +29,11 @@
 
 /* Begin PBXFileReference section */
 		0E134CB11B58CA8400107D76 /* HMNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMNavigationController.swift; sourceTree = "<group>"; };
+		0E70CD9E1B58D18100009BD1 /* HMViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMViewController.swift; sourceTree = "<group>"; };
+		0E70CDA01B58D91800009BD1 /* HMTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMTableViewController.swift; sourceTree = "<group>"; };
 		0EC0FB901B58C7D90021F862 /* HamburgerMenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HamburgerMenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC0FB941B58C7D90021F862 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0EC0FB951B58C7D90021F862 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0EC0FB971B58C7D90021F862 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0EC0FB9A1B58C7D90021F862 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0EC0FB9C1B58C7D90021F862 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0EC0FB9F1B58C7D90021F862 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -62,6 +64,8 @@
 			isa = PBXGroup;
 			children = (
 				0E134CB11B58CA8400107D76 /* HMNavigationController.swift */,
+				0E70CD9E1B58D18100009BD1 /* HMViewController.swift */,
+				0E70CDA01B58D91800009BD1 /* HMTableViewController.swift */,
 			);
 			name = HMKIT;
 			sourceTree = "<group>";
@@ -89,7 +93,6 @@
 			children = (
 				0E134CB31B58CA8C00107D76 /* HMKIT */,
 				0EC0FB951B58C7D90021F862 /* AppDelegate.swift */,
-				0EC0FB971B58C7D90021F862 /* ViewController.swift */,
 				0EC0FB991B58C7D90021F862 /* Main.storyboard */,
 				0EC0FB9C1B58C7D90021F862 /* Images.xcassets */,
 				0EC0FB9E1B58C7D90021F862 /* LaunchScreen.xib */,
@@ -224,8 +227,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0EC0FB981B58C7D90021F862 /* ViewController.swift in Sources */,
+				0E70CD9F1B58D18100009BD1 /* HMViewController.swift in Sources */,
 				0EC0FB961B58C7D90021F862 /* AppDelegate.swift in Sources */,
+				0E70CDA11B58D91800009BD1 /* HMTableViewController.swift in Sources */,
 				0E134CB21B58CA8400107D76 /* HMNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
