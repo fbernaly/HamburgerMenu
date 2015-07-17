@@ -28,14 +28,13 @@ enum HMMenuRotationBehavior : Int {
 
 class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var delegate: HMMenuViewControllerDelegate?
-    var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
-    var rotationBehavior:HMMenuRotationBehavior = .SetWindowColorBackground
-    
     @IBOutlet var containerView: UIView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
     
+    var delegate: HMMenuViewControllerDelegate?
+    var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
+    var rotationBehavior:HMMenuRotationBehavior = .SetWindowColorBackground
     var containerViewBackgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
     
     private let images:NSArray
