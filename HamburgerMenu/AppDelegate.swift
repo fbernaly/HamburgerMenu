@@ -21,6 +21,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navigationController.transparency = true
         }
         
+        let manager = HMViewControllerManager.sharedInstance
+        manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")
+        manager.closeMenuButtonImage = UIImage(named: "hamburgerMenuIcon")
+        manager.titles = ["Home",
+            "About Us",
+            "Our Service",
+            "Contact Us",
+            "Help?"]
+        manager.images = [UIImage(named: "hamburgerMenuIcon")!,
+            UIImage(named: "hamburgerMenuIcon")!,
+            UIImage(named: "hamburgerMenuIcon")!,
+            UIImage(named: "hamburgerMenuIcon")!,
+            UIImage(named: "hamburgerMenuIcon")!]
+        
+        if let navigationController = window?.rootViewController as? UINavigationController {
+            manager.navigationController = navigationController
+            manager.viewControllers = NSArray(objects: navigationController.viewControllers.first!,
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller4"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller5"))
+        }
+        
         return true
     }
 

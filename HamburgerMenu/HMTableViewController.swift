@@ -10,9 +10,10 @@ import UIKit
 
 class HMTableViewController: UITableViewController {
     
-    var hamburgerMenuIconImage: UIImage? = UIImage(named: "hamburgerMenuIcon") {
+    var hamburgerMenuButtonImage: UIImage? {
         didSet {
-            setupLeftBarButtonItem()
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image:hamburgerMenuButtonImage, style:.Plain, target:self, action:"showMenu")
+            navigationItem.leftBarButtonItem?.tintColor = UIColor.blueColor()
         }
     }
     
@@ -21,19 +22,13 @@ class HMTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupLeftBarButtonItem()
+        hamburgerMenuButtonImage = HMViewControllerManager.sharedInstance.hamburgerMenuButtonImage
     }
     
     // MARK: - Navigation helper functions
     
     func showMenu () {
         
-    }
-    
-    func setupLeftBarButtonItem () {
-        // setting up menu bar button
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image:hamburgerMenuIconImage, style:.Plain, target:self, action:"showMenu")
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.blueColor()
     }
 
     // MARK: - Table view data source
