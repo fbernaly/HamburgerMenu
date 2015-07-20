@@ -36,6 +36,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private let images:NSArray
     private let titles:NSArray
     private let closeImageButton:UIImage
+    private let minContainerViewWidth:CGFloat = 10
     
     private var doneAnimations = false
     private var doneCellAnimations = false
@@ -78,7 +79,6 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         // closeButton setup
         if closeButton == nil {
             closeButton = UIButton.buttonWithType(.Custom) as? UIButton
-            closeButton.frame = CGRectMake(15, 20, 30, 30)
         }
         closeButton.backgroundColor = UIColor.clearColor()
         closeButton.setImage(closeImageButton, forState: .Normal)
@@ -87,7 +87,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         //tableview setup
         if tableView == nil {
-            tableView = UITableView(frame: CGRectMake(0, 70, view.frame.size.width, view.frame.size.height-70), style:.Plain)
+            tableView = UITableView()
         }
         tableView.backgroundColor = UIColor.clearColor()
         tableView.separatorStyle = .None
@@ -153,10 +153,37 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }
         currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
-        if !slideContainerView {
-            self.containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
-            self.view.layoutIfNeeded()
+        
+        if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+            if !slideContainerView {
+                containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+                view.layoutIfNeeded()
+            }
+        } else {
+            updateFrames()
         }
+    }
+    
+    @objc private func updateFrames () {
+        var closeButtonOriginY:CGFloat = 26
+        var tableViewFrameY:CGFloat = 55
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && !((UIDevice.currentDevice().orientation == orientation && (UIDevice.currentDevice().orientation == .Portrait || UIDevice.currentDevice().orientation == .PortraitUpsideDown)) || UIDevice.currentDevice().orientation == .Portrait) {
+            closeButtonOriginY = 0
+            tableViewFrameY = 30
+        }
+        
+        //updating closeButton frame
+        closeButton.frame = CGRectMake(UIDevice.currentDevice().userInterfaceIdiom == .Phone ? 13 : 17, closeButtonOriginY, 30, 30)
+        
+        //updating containerView frame
+        if self.slideContainerView {
+            self.containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, view.frame.size.height)
+        } else {
+            self.containerView.frame = self.view.frame
+        }
+        
+        //updating tableView frame
+        tableView.frame =  CGRectMake(0, tableViewFrameY, view.frame.size.width, view.frame.size.height-tableViewFrameY)
     }
 
     // MARK: - Show & Close menu
@@ -178,22 +205,30 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.view.alpha = 0
                     navigationController.presentViewController(self, animated:false, completion: { () -> Void in
                         if let frame = self.frame {
-                            if self.slideContainerView {
-                                self.containerViewWidthConstraint.constant = 10
+                            if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+                                if self.slideContainerView {
+                                    containerViewWidthConstraint.constant = self.minContainerViewWidth
+                                } else {
+                                    containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+                                }
+                                self.view.layoutIfNeeded()
                             } else {
-                                self.containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+                                self.updateFrames()
                             }
                         }
-                        self.view.layoutIfNeeded()
                         UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
                             self.view.alpha = 1.0
+                            self.doneAnimations = true
                             if self.slideContainerView {
                                 if let frame = self.frame {
-                                    self.containerViewWidthConstraint.constant = self.maxContainerViewWidth
-                                    self.view.layoutIfNeeded()
+                                    if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+                                        containerViewWidthConstraint.constant = self.maxContainerViewWidth
+                                        self.view.layoutIfNeeded()
+                                    } else {
+                                        self.updateFrames()
+                                    }
                                 }
                             }
-                            self.doneAnimations = true
                             self.tableView.reloadData()
                             }, completion: { (finished) -> Void in
                                 if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
