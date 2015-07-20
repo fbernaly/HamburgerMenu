@@ -14,12 +14,6 @@ enum HMCellMenuAnimation : Int {
     case SlideInWithBounceAnimation
 }
 
-enum HMMenuRotationBehavior : Int {
-    case None
-    case Close
-    case SetWindowColorBackground
-}
-
 @objc protocol HMMenuViewControllerDelegate: NSObjectProtocol {
     func setNewViewController (navController:UINavigationController, fromIndexPath indexPath:NSIndexPath)
     optional func didShowMenu (menu:HMMenuViewController,  inViewController viewController:UIViewController);
@@ -31,11 +25,13 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var containerView: UIView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
+    @IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint!
     
     var delegate: HMMenuViewControllerDelegate?
     var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
-    var rotationBehavior:HMMenuRotationBehavior = .SetWindowColorBackground
     var containerViewBackgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+    var slideContainerView = true
+    var maxContainerViewWidth:CGFloat = 200
     
     private let images:NSArray
     private let titles:NSArray
@@ -45,16 +41,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var doneCellAnimations = false
     private var orientation = UIDeviceOrientation.Unknown
     private var currentController:UIViewController?
-    private var viewBackgroundColor:UIColor { // ??? refactor needed
-        if let navigationController = HMViewControllerManager.sharedInstance.navigationController {
-            UIGraphicsBeginImageContextWithOptions(view.bounds.size, false, UIScreen.mainScreen().scale)
-            navigationController.view.drawViewHierarchyInRect(navigationController.view.bounds, afterScreenUpdates: false)
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return UIColor(patternImage: image)
-        }
-        return UIColor.whiteColor()
-    }
+    private var frame:CGRect?
     
     // MARK: - Initializers
     
@@ -84,7 +71,9 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.tintColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.clearColor()
+        view.tintColor = UIColor.whiteColor()
+        modalPresentationStyle = .OverCurrentContext
         
         // closeButton setup
         if closeButton == nil {
@@ -131,54 +120,80 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     @objc private func didRotate (notification: NSNotification ) {
         let orientation = UIDevice.currentDevice().orientation
-        
-        var rotationBehavior:HMMenuRotationBehavior = .None
-        if ((self.orientation == .Portrait &&
-            (orientation == .PortraitUpsideDown ||
-                orientation == .LandscapeLeft ||
-                orientation == .LandscapeRight)) ||
-            (orientation == .Portrait &&
-                (self.orientation == .PortraitUpsideDown ||
-                    self.orientation == .LandscapeLeft ||
-                    self.orientation == .LandscapeRight))) {
-                        rotationBehavior = self.rotationBehavior
-        }
-        
-        switch rotationBehavior {
-        case .Close:
-            closeMenuFromController(self);
-            
-        case .SetWindowColorBackground:
-            if let window = UIApplication.sharedApplication().delegate?.window {
-                self.view.backgroundColor = window?.backgroundColor
+        currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0)
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            if ((self.orientation == .Portrait &&
+                (orientation == .PortraitUpsideDown ||
+                    orientation == .LandscapeLeft ||
+                    orientation == .LandscapeRight)) ||
+                (orientation == .Portrait &&
+                    (self.orientation == .PortraitUpsideDown ||
+                        self.orientation == .LandscapeLeft ||
+                        self.orientation == .LandscapeRight))) {
+                            if let frame = self.frame {
+                                self.currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
+                            }
+            } else {
+                self.currentController?.view.frame = frame!
             }
-            
-        default:
-            view.backgroundColor = self.viewBackgroundColor
+        } else {
+            if (((self.orientation == .Portrait ||
+                self.orientation == .PortraitUpsideDown) &&
+                (orientation == .LandscapeLeft ||
+                    orientation == .LandscapeRight)) ||
+                ((orientation == .Portrait ||
+                    orientation == .PortraitUpsideDown) &&
+                    (self.orientation == .LandscapeLeft ||
+                        self.orientation == .LandscapeRight))) {
+                            if let frame = self.frame {
+                                self.currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
+                            }
+            } else {
+                self.currentController?.view.frame = frame!
+            }
+        }
+        currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
+        if !slideContainerView {
+            self.containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+            self.view.layoutIfNeeded()
         }
     }
-    
+
     // MARK: - Show & Close menu
-    
+
     func showMenuFromController (viewController: UIViewController) {
         if doneAnimations {
             return;
         }
+        
+        currentController = viewController
+        orientation = UIDevice.currentDevice().orientation
+        frame = viewController.view.frame
         
         if let navigationController = HMViewControllerManager.sharedInstance.navigationController {
             doneCellAnimations =  false
             UIView.animateWithDuration(0.15, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options:UIViewAnimationOptions(0), animations: { () -> Void in
                 viewController.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
                 }) { (finished) -> Void in
-                    self.currentController = viewController
-                    self.orientation = UIDevice.currentDevice().orientation
-                    self.view.backgroundColor = self.viewBackgroundColor
-                    self.doneAnimations = true
-                    self.containerView.alpha = 0.0
-                    
-                    navigationController.presentViewController(self, animated: false, completion: { () -> Void in
-                        UIView.animateWithDuration(0.15, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
-                            self.containerView.alpha = 1.0
+                    self.view.alpha = 0
+                    navigationController.presentViewController(self, animated:false, completion: { () -> Void in
+                        if let frame = self.frame {
+                            if self.slideContainerView {
+                                self.containerViewWidthConstraint.constant = 10
+                            } else {
+                                self.containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+                            }
+                        }
+                        self.view.layoutIfNeeded()
+                        UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
+                            self.view.alpha = 1.0
+                            if self.slideContainerView {
+                                if let frame = self.frame {
+                                    self.containerViewWidthConstraint.constant = self.maxContainerViewWidth
+                                    self.view.layoutIfNeeded()
+                                }
+                            }
+                            self.doneAnimations = true
                             self.tableView.reloadData()
                             }, completion: { (finished) -> Void in
                                 if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
@@ -201,6 +216,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             self.currentController?.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0)
             }) { (finished) -> Void in
                 self.doneAnimations = false
+                self.tableView.reloadData()
                 HMViewControllerManager.sharedInstance.navigationController?.dismissViewControllerAnimated(false, completion: { () -> Void in
                     self.currentController?.dismissViewControllerAnimated(false, completion: nil)
                     if self.delegate?.respondsToSelector(Selector("didCloseMenu:")) == true {
@@ -252,7 +268,11 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return titles.count
+        if doneAnimations {
+            return titles.count
+        } else {
+            return 0
+        }
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
