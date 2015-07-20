@@ -31,6 +31,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var delegate: HMMenuViewControllerDelegate?
     var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
     var slideContainerView = true
+    var animateCellMenuTap = true
     var maxContainerViewWidth:CGFloat = 200
     
     private let images:NSArray
@@ -311,9 +312,47 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        closeMenuFromController(self)
-        delegate?.setNewViewController(HMViewControllerManager.sharedInstance.navigationController!, fromIndexPath: indexPath)
+        let completion: () -> () = {
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            self.closeMenuFromController(self)
+            self.delegate?.setNewViewController(HMViewControllerManager.sharedInstance.navigationController!, fromIndexPath: indexPath)
+        }
+        if animateCellMenuTap {
+            if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+                if let item = cell.imageView {
+                    let duration = 0.5
+                    let pathFrame = CGRect(x: -CGRectGetMidX(item.bounds), y: -CGRectGetMidY(item.bounds), width: item.bounds.size.width, height: item.bounds.size.height)
+                    let path = UIBezierPath(roundedRect: pathFrame, cornerRadius: item.frame.size.width/2.0)
+                    let shapePosition = view.convertPoint(item.center, fromView: cell)
+                    let circleShape = CAShapeLayer()
+                    circleShape.path = path.CGPath
+                    circleShape.position = shapePosition
+                    circleShape.fillColor = UIColor.clearColor().CGColor
+                    circleShape.opacity = 0
+                    circleShape.strokeColor = view.tintColor.CGColor
+                    circleShape.lineWidth = 0.2
+                    view.layer.addSublayer(circleShape)
+                    
+                    let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
+                    scaleAnimation.fromValue = NSValue(CATransform3D: CATransform3DIdentity)
+                    scaleAnimation.toValue = NSValue(CATransform3D: CATransform3DMakeScale(10.0, 10.0, 1))
+                    let alphaAnimation = CABasicAnimation(keyPath: "opacity")
+                    alphaAnimation.fromValue = 1
+                    alphaAnimation.toValue = 0
+                    let animation = CAAnimationGroup()
+                    animation.animations = [scaleAnimation, alphaAnimation]
+                    animation.duration = duration
+                    animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+                    circleShape.addAnimation(animation, forKey: nil)
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(duration * 0.5 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+                        completion()
+                    }
+                }
+            }
+        } else {
+            completion()
+        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
