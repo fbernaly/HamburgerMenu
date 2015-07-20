@@ -17,7 +17,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kzm-6m-iPb">
+                            <visualEffectView opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6FS-8r-46j">
+                                <rect key="frame" x="-4" y="0.0" width="608" height="600"/>
+                                <view key="contentView" hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="mUH-tb-HKl">
+                                    <rect key="frame" x="0.0" y="0.0" width="608" height="600"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kzm-6m-iPb" userLabel="Container View">
                                 <rect key="frame" x="-4" y="0.0" width="608" height="600"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mV4-7M-xny">
@@ -47,12 +55,27 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="6FS-8r-46j" firstAttribute="leading" secondItem="ueo-Fq-U3P" secondAttribute="leadingMargin" constant="-20" id="7QU-Wx-TrE"/>
+                            <constraint firstItem="6FS-8r-46j" firstAttribute="top" secondItem="3K9-6o-gRP" secondAttribute="bottom" id="7Wd-fM-q99"/>
+                            <constraint firstItem="3K9-6o-gRP" firstAttribute="top" secondItem="6FS-8r-46j" secondAttribute="bottom" id="8QM-F5-gbd"/>
                             <constraint firstItem="Kzm-6m-iPb" firstAttribute="top" secondItem="ueo-Fq-U3P" secondAttribute="topMargin" id="C6P-NX-3sK"/>
+                            <constraint firstItem="6FS-8r-46j" firstAttribute="top" secondItem="3K9-6o-gRP" secondAttribute="bottom" id="Jaf-Tg-62B"/>
                             <constraint firstItem="Kzm-6m-iPb" firstAttribute="leading" secondItem="ueo-Fq-U3P" secondAttribute="leadingMargin" constant="-20" id="MoT-pj-EdX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="6FS-8r-46j" secondAttribute="trailing" constant="-20" id="ZoX-uQ-T06"/>
+                            <constraint firstItem="HM0-BT-XHU" firstAttribute="top" secondItem="6FS-8r-46j" secondAttribute="bottom" id="bq2-0j-Q3p"/>
                             <constraint firstItem="HM0-BT-XHU" firstAttribute="top" secondItem="Kzm-6m-iPb" secondAttribute="bottom" id="ek8-31-0rX"/>
+                            <constraint firstItem="6FS-8r-46j" firstAttribute="top" secondItem="3K9-6o-gRP" secondAttribute="bottom" constant="-20" id="lvQ-Ux-9HS"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="7Wd-fM-q99"/>
+                                <exclude reference="Jaf-Tg-62B"/>
+                                <exclude reference="8QM-F5-gbd"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
+                        <outlet property="blurEffectView" destination="6FS-8r-46j" id="Soc-IV-IsA"/>
                         <outlet property="closeButton" destination="mV4-7M-xny" id="Vvv-pD-rgh"/>
                         <outlet property="containerView" destination="Kzm-6m-iPb" id="UD8-Sj-5hC"/>
                         <outlet property="containerViewWidthConstraint" destination="Rfw-iQ-mA9" id="ICF-SB-Fyg"/>

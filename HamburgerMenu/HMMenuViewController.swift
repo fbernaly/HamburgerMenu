@@ -26,10 +26,10 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
     @IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var blurEffectView: UIVisualEffectView!
     
     var delegate: HMMenuViewControllerDelegate?
     var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
-    var containerViewBackgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
     var slideContainerView = true
     var maxContainerViewWidth:CGFloat = 200
     
@@ -72,9 +72,20 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // view setup
         view.backgroundColor = UIColor.clearColor()
         view.tintColor = UIColor.whiteColor()
+        
+        // ViewController setup
         modalPresentationStyle = .OverCurrentContext
+        
+        // blurEffectView setup
+        if blurEffectView == nil {
+            blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light)) as UIVisualEffectView
+            blurEffectView.frame = view.bounds
+            blurEffectView.alpha = 0.7
+            view.addSubview(blurEffectView)
+        }
         
         // closeButton setup
         if closeButton == nil {
@@ -103,7 +114,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             containerView.addSubview(closeButton)
             view.addSubview(containerView)
         }
-        containerView.backgroundColor = containerViewBackgroundColor
+        containerView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -177,10 +188,13 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         //updating containerView frame
         if self.slideContainerView {
-            self.containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, view.frame.size.height)
+            containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, view.frame.size.height)
         } else {
-            self.containerView.frame = self.view.frame
+            containerView.frame = view.frame
         }
+        
+        //updating blurEffectView frame
+        blurEffectView.frame = view.frame
         
         //updating tableView frame
         tableView.frame =  CGRectMake(0, tableViewFrameY, view.frame.size.width, view.frame.size.height-tableViewFrameY)
