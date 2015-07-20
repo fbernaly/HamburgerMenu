@@ -128,6 +128,10 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+        closeMenuFromController(self)
+    }
+    
     // MARK: - Rotation Methods
     
     @objc private func didRotate (notification: NSNotification ) {
