@@ -15,9 +15,9 @@ enum HMCellMenuAnimation : Int {
 }
 
 @objc protocol HMMenuViewControllerDelegate: NSObjectProtocol {
-    func setNewViewController (navController:UINavigationController, fromIndexPath indexPath:NSIndexPath)
-    optional func didShowMenu (menu:HMMenuViewController,  inViewController viewController:UIViewController);
-    optional func didCloseMenu (menu:HMMenuViewController);
+    func menuViewController (menuViewController:HMMenuViewController, didSelectItemAtIndex index:Int)
+    optional func didShowMenuViewController (menuViewController:HMMenuViewController,  inViewController viewController:UIViewController);
+    optional func didCloseMenuViewController (menuViewController:HMMenuViewController);
 }
 
 class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -251,7 +251,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             self.tableView.reloadData()
                             }, completion: { (finished) -> Void in
                                 if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
-                                    self.delegate?.didShowMenu!(self, inViewController: viewController)
+                                    self.delegate?.didShowMenuViewController!(self, inViewController: viewController)
                                 }
                         })
                     })
@@ -272,9 +272,8 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 self.doneAnimations = false
                 self.tableView.reloadData()
                 HMViewControllerManager.sharedInstance.navigationController?.dismissViewControllerAnimated(false, completion: { () -> Void in
-                    self.currentController?.dismissViewControllerAnimated(false, completion: nil)
                     if self.delegate?.respondsToSelector(Selector("didCloseMenu:")) == true {
-                        self.delegate?.didCloseMenu!(self)
+                        self.delegate?.didCloseMenuViewController!(self)
                     }
                 })
         }
@@ -319,7 +318,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let completion: () -> () = {
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             self.closeMenuFromController(self)
-            self.delegate?.setNewViewController(HMViewControllerManager.sharedInstance.navigationController!, fromIndexPath: indexPath)
+            self.delegate?.menuViewController(self, didSelectItemAtIndex: indexPath.row)
         }
         if animateCellMenuTap {
             if let cell = tableView.cellForRowAtIndexPath(indexPath) {

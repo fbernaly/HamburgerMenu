@@ -34,9 +34,9 @@ class HMViewController: UIViewController, HMMenuViewControllerDelegate {
         }
     }
     
-    func setNewViewController (navController:UINavigationController, fromIndexPath indexPath:NSIndexPath) {
-        if indexPath.row < HMViewControllerManager.sharedInstance.viewControllers?.count {
-            if let viewController = HMViewControllerManager.sharedInstance.viewControllers?.objectAtIndex(indexPath.row) as? UIViewController {
+    func menuViewController (menuViewController:HMMenuViewController, didSelectItemAtIndex index:Int) {
+        if index < HMViewControllerManager.sharedInstance.viewControllers?.count {
+            if let viewController = HMViewControllerManager.sharedInstance.viewControllers?.objectAtIndex(index) as? UIViewController {
                 navigationController?.viewControllers = [viewController]
             }
         }
