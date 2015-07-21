@@ -33,7 +33,9 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
     var slideContainerView = true
     var animateCellMenuTap = true
+    var viewcontrollerScaleTransformation = true
     var maxContainerViewWidth:CGFloat = 200
+    var scaleTransformation:CGFloat = 0.6
     
     private let images:NSArray
     private let titles:NSArray
@@ -142,13 +144,21 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     @objc private func didRotate (notification: NSNotification ) {
         
-        currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0)
-        currentController?.view.frame = UIScreen.mainScreen().bounds
-        currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
+        }
         
         updateFrames()
         
         tableView.setContentOffset(CGPointMake(0, 0), animated: false)
+    }
+    
+    @objc private func viewcontrollerWithScaleTransformation (scale: CGFloat) {
+        if viewcontrollerScaleTransformation {
+            currentController?.view.transform = CGAffineTransformIdentity
+            currentController?.view.frame = UIScreen.mainScreen().bounds
+            currentController?.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, scale, scale)
+        }
     }
     
     // MARK: - Update frames and constraints methods
@@ -212,7 +222,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let navigationController = HMViewControllerManager.sharedInstance.navigationController {
             doneCellAnimations =  false
             UIView.animateWithDuration(0.15, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options:UIViewAnimationOptions(0), animations: { () -> Void in
-                viewController.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
+                self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
                 }) { (finished) -> Void in
                     self.view.alpha = 0
                     navigationController.presentViewController(self, animated:false, completion: { () -> Void in
@@ -241,7 +251,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         UIView.animateWithDuration(0.3/1.5, delay:0.0, usingSpringWithDamping:1.0, initialSpringVelocity:1.0, options:UIViewAnimationOptions(0), animations: { () -> Void in
-            self.currentController?.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0)
+            self.viewcontrollerWithScaleTransformation(1.0)
             }) { (finished) -> Void in
                 self.doneAnimations = false
                 self.tableView.reloadData()
