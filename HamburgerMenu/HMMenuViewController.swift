@@ -251,29 +251,25 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }) { (finished) -> Void in
                     self.view.alpha = 0
                     navigationController.presentViewController(self, animated:false, completion: { () -> Void in
-                        if let frame = self.originalCurrentControllerFrame {
-                            if let containerViewWidthConstraint = self.containerViewWidthConstraint {
-                                if self.slideContainerView {
-                                    containerViewWidthConstraint.constant = self.minContainerViewWidth
-                                } else {
-                                    containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
-                                }
-                                self.view.layoutIfNeeded()
+                        if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+                            if self.slideContainerView {
+                                containerViewWidthConstraint.constant = self.minContainerViewWidth
                             } else {
-                                self.updateFrames()
+                                containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
                             }
+                            self.view.layoutIfNeeded()
+                        } else {
+                            self.updateFrames()
                         }
                         UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
                             self.view.alpha = 1.0
                             self.doneAnimations = true
                             if self.slideContainerView {
-                                if let frame = self.originalCurrentControllerFrame {
-                                    if let containerViewWidthConstraint = self.containerViewWidthConstraint {
-                                        containerViewWidthConstraint.constant = self.maxContainerViewWidth
-                                        self.view.layoutIfNeeded()
-                                    } else {
-                                        self.updateFrames()
-                                    }
+                                if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+                                    containerViewWidthConstraint.constant = self.maxContainerViewWidth
+                                    self.view.layoutIfNeeded()
+                                } else {
+                                    self.updateFrames()
                                 }
                             }
                             self.tableView.reloadData()
@@ -334,7 +330,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             cell = UITableViewCell(style:.Default, reuseIdentifier: cellIdentifier)
         }
         cell?.selectionStyle = .None
-        cell?.backgroundColor = UIColor.blueColor()
+        cell?.backgroundColor = UIColor.clearColor()
         cell?.textLabel?.backgroundColor = UIColor.clearColor()
         cell?.textLabel?.textColor = UIColor.whiteColor()
         cell?.textLabel?.textAlignment = .Left
