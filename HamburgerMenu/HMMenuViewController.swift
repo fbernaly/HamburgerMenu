@@ -128,7 +128,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:Selector("didRotate:"), name:"UIDeviceOrientationDidChangeNotification" , object:nil)
-        updateButtonContraint()
+        updateButtonConstraint()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -189,17 +189,26 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             updateFrames()
         }
         
-        updateButtonContraint()
+        updateButtonConstraint()
         tableView.setContentOffset(CGPointMake(0, 0), animated: false)
     }
     
     // MARK: - Update frames and constraints methods
     
-    @objc private func updateButtonContraint () {
+    @objc private func updateButtonConstraint () {
         if buttonOriginYConstraint != nil {
             originalbuttonOriginY = 26
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIDevice.currentDevice().orientation != .Portrait {
-                originalbuttonOriginY = 0
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+                switch UIDevice.currentDevice().orientation {
+                case .Portrait:
+                    break
+                    
+                case .FaceDown, .FaceUp:
+                    originalbuttonOriginY = buttonOriginYConstraint.constant
+                    
+                default:
+                    originalbuttonOriginY = 0
+                }
             }
             buttonOriginYConstraint.constant = originalbuttonOriginY!
             view.layoutIfNeeded()
