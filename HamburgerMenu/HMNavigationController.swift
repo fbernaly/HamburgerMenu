@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HMNavigationController: UINavigationController, UINavigationControllerDelegate {
+class HMNavigationController: UINavigationController {
 
     var transparency:Bool = false {
         didSet {
@@ -34,19 +34,6 @@ class HMNavigationController: UINavigationController, UINavigationControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        delegate = self
-    }
-    
-    // MARK: Delegate Methods
-    
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        viewController.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6);
-        
-        UIView.animateWithDuration(0.2, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options:.CurveEaseIn, animations: { () -> Void in
-            viewController.view.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
-        }, completion: nil)
-        
     }
 
 }
