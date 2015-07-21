@@ -34,6 +34,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var slideContainerView = true
     var animateCellMenuTap = true
     var viewcontrollerScaleTransformation = true
+    var closeMenuAfterRotation = false
     var maxContainerViewWidth:CGFloat = 200
     var scaleTransformation:CGFloat = 0.6
     
@@ -143,14 +144,16 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Rotation Methods
     
     @objc private func didRotate (notification: NSNotification ) {
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
-            self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
+        if closeMenuAfterRotation {
+            closeMenuFromController(self)
+            return
         }
         
-        updateFrames()
-        
         tableView.setContentOffset(CGPointMake(0, 0), animated: false)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.05 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
+            self.updateFrames()
+        }
     }
     
     @objc private func viewcontrollerWithScaleTransformation (scale: CGFloat) {
