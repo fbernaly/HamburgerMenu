@@ -22,18 +22,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         let manager = HMViewControllerManager.sharedInstance
-        manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)
-        manager.closeMenuButtonImage = UIImage(named: "closeIcon")!.imageWithRenderingMode(.AlwaysTemplate)
+        manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!
+        manager.closeMenuButtonImage = UIImage(named: "closeIcon")!
         manager.titles = ["Home",
-            "About Us",
-            "Our Service",
-            "Contact Us",
-            "Help?"]
-        manager.images = [UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
-            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
-            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
-            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate),
-            UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)]
+            "Ampersand",
+            "Aperture",
+            "Article",
+            "At",
+            "Bars",
+            "Battery",
+            "Bolt",
+            "Book",
+            "Equalizer",
+            "Headphones",
+            "iPhone",
+            "Keys",
+            "Layers",
+            "Lock",
+            "Mic",
+            "Movies",
+            "Paperclip",
+            "Pen"]
+        manager.images = [UIImage(named: "home")!,
+            UIImage(named: "ampersand")!,
+            UIImage(named: "aperture")!,
+            UIImage(named: "article")!,
+            UIImage(named: "at")!,
+            UIImage(named: "bars")!,
+            UIImage(named: "batteryCharging")!,
+            UIImage(named: "bolt")!,
+            UIImage(named: "book")!,
+            UIImage(named: "equalizer")!,
+            UIImage(named: "headphones")!,
+            UIImage(named: "iphone")!,
+            UIImage(named: "key")!,
+            UIImage(named: "layers")!,
+            UIImage(named: "lock")!,
+            UIImage(named: "mic")!,
+            UIImage(named: "movie")!,
+            UIImage(named: "paperclip")!,
+            UIImage(named: "pen")!]
         // HMMenuViewController NO using Storyboard
         // manager.menuViewController = HMMenuViewController()
         // HMMenuViewController using Storyboard
@@ -44,7 +72,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller4"),
-                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller5"))
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller5"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller1"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller4"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller5"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller1"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller4"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller5"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller1"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),
+                UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller4"))
         }
         
         return true

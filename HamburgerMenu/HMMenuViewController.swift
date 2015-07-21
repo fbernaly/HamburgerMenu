@@ -38,6 +38,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private let titles:NSArray
     private let closeImageButton:UIImage
     private let minContainerViewWidth:CGFloat = 10
+    private let heightForRow = 70
     
     private var doneAnimations = false
     private var doneCellAnimations = false
@@ -253,6 +254,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                                 if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
                                     self.delegate?.didShowMenuViewController!(self, inViewController: viewController)
                                 }
+                                self.doneCellAnimations = true
                         })
                     })
             }
@@ -309,9 +311,17 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell?.textLabel?.backgroundColor = UIColor.clearColor()
         cell?.textLabel?.textColor = UIColor.whiteColor()
         cell?.textLabel?.textAlignment = .Left
-        cell?.imageView?.image = images.objectAtIndex(indexPath.row) as? UIImage
+        cell?.imageView?.image = self.makeThumbnail((images.objectAtIndex(indexPath.row) as? UIImage)!, ofSize: CGSizeMake(40, 40)).imageWithRenderingMode(.AlwaysTemplate)
         cell?.textLabel?.text = titles.objectAtIndex(indexPath.row) as? String
         return cell!
+    }
+    
+    func makeThumbnail (image:UIImage,  ofSize size:CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.mainScreen().scale)
+        image.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        let temp =  UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return temp
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -360,6 +370,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if doneAnimations {
+            tableView.scrollEnabled = titles.count * heightForRow > Int(tableView.frame.size.height) ? true : false
             return titles.count
         } else {
             return 0
@@ -367,7 +378,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 70.0
+        return CGFloat(heightForRow)
     }
     
     // MARK: - Cell animations
