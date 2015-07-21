@@ -125,7 +125,6 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:Selector("didRotate:"), name:"UIDeviceOrientationDidChangeNotification" , object:nil)
-        updateButtonConstraint()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -147,77 +146,58 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         currentController?.view.frame = UIScreen.mainScreen().bounds
         currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
         
-        if containerViewWidthConstraint != nil {
-            if !slideContainerView {
-                containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
-                view.layoutIfNeeded()
-            }
-        } else {
-            updateFrames()
-        }
-        
-        updateButtonConstraint()
+        updateFrames()
         
         tableView.setContentOffset(CGPointMake(0, 0), animated: false)
     }
     
     // MARK: - Update frames and constraints methods
     
-    @objc private func updateButtonConstraint () {
+    @objc private func updateFrames () {
+        //updating closeButton and tableView frames when using Storyboard (buttonOriginYConstraint not nil)
         if buttonOriginYConstraint != nil {
             originalbuttonOriginY = 26
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-                switch UIDevice.currentDevice().orientation {
-                case .Portrait:
-                    break
-                    
-                case .FaceDown, .FaceUp:
-                    originalbuttonOriginY = buttonOriginYConstraint.constant
-                    
-                default:
-                    originalbuttonOriginY = 0
-                }
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height {
+                originalbuttonOriginY = 0
             }
             buttonOriginYConstraint.constant = originalbuttonOriginY!
             view.layoutIfNeeded()
         }
-    }
-
-    @objc private func updateFrames () {
-        var closeButtonOriginY:CGFloat = 26
-        var tableViewFrameY:CGFloat = 55
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            switch UIDevice.currentDevice().orientation {
-            case .Portrait:
-                break
-                
-            case .FaceDown, .FaceUp:
-                closeButtonOriginY = originalCloseButtonFrame?.origin.y as CGFloat!
-                tableViewFrameY = originalTableViewFrame?.origin.y as CGFloat!
-                
-            default:
+        
+        if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+            //updating containerView frame when using Storyboard (containerViewWidthConstraint not nil)
+            if slideContainerView {
+                containerViewWidthConstraint.constant = doneAnimations ? maxContainerViewWidth : minContainerViewWidth
+            } else {
+                containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+            }
+            view.layoutIfNeeded()
+        } else {
+            var closeButtonOriginY:CGFloat = 26
+            var tableViewFrameY:CGFloat = 55
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height {
                 closeButtonOriginY = 0
                 tableViewFrameY = 30
             }
+            
+            //updating closeButton frame
+            closeButton.frame = CGRectMake(UIDevice.currentDevice().userInterfaceIdiom == .Phone ? 13 : 17, closeButtonOriginY, 30, 30)
+            originalCloseButtonFrame = closeButton.frame
+            
+            //updating containerView frame
+            if slideContainerView {
+                containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, UIScreen.mainScreen().bounds.size.height)
+            } else {
+                containerView.frame = UIScreen.mainScreen().bounds
+            }
+            
+            //updating blurEffectView frame
+            blurEffectView.frame = UIScreen.mainScreen().bounds
+            
+            //updating tableView frame
+            tableView.frame =  CGRectMake(0, tableViewFrameY, containerView.frame.width, containerView.frame.height)
+            originalTableViewFrame = tableView.frame
         }
-        
-        //updating closeButton frame
-        closeButton.frame = CGRectMake(UIDevice.currentDevice().userInterfaceIdiom == .Phone ? 13 : 17, closeButtonOriginY, 30, 30)
-        originalCloseButtonFrame = closeButton.frame
-        
-        //updating containerView frame
-        if slideContainerView {
-            containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, UIScreen.mainScreen().bounds.size.height)
-        } else {
-            containerView.frame = UIScreen.mainScreen().bounds
-        }
-        
-        //updating blurEffectView frame
-        blurEffectView.frame = UIScreen.mainScreen().bounds
-        
-        //updating tableView frame
-        tableView.frame =  CGRectMake(0, tableViewFrameY, containerView.frame.width, containerView.frame.height)
-        originalTableViewFrame = tableView.frame
     }
 
     // MARK: - Show & Close menu
@@ -236,27 +216,11 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }) { (finished) -> Void in
                     self.view.alpha = 0
                     navigationController.presentViewController(self, animated:false, completion: { () -> Void in
-                        if let containerViewWidthConstraint = self.containerViewWidthConstraint {
-                            if self.slideContainerView {
-                                containerViewWidthConstraint.constant = self.minContainerViewWidth
-                            } else {
-                                containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
-                            }
-                            self.view.layoutIfNeeded()
-                        } else {
-                            self.updateFrames()
-                        }
+                        self.updateFrames()
                         UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
                             self.view.alpha = 1.0
                             self.doneAnimations = true
-                            if self.slideContainerView {
-                                if let containerViewWidthConstraint = self.containerViewWidthConstraint {
-                                    containerViewWidthConstraint.constant = self.maxContainerViewWidth
-                                    self.view.layoutIfNeeded()
-                                } else {
-                                    self.updateFrames()
-                                }
-                            }
+                            self.updateFrames()
                             self.tableView.reloadData()
                             }, completion: { (finished) -> Void in
                                 self.doneCellAnimations = true
