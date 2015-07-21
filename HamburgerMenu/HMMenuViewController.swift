@@ -218,9 +218,19 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @objc private func updateFrames () {
         var closeButtonOriginY:CGFloat = 26
         var tableViewFrameY:CGFloat = 55
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIDevice.currentDevice().orientation != .Portrait {
-            closeButtonOriginY = 0
-            tableViewFrameY = 30
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            switch UIDevice.currentDevice().orientation {
+            case .Portrait:
+                break
+                
+            case .FaceDown, .FaceUp:
+                closeButtonOriginY = originalCloseButtonFrame?.origin.y as CGFloat!
+                tableViewFrameY = originalTableViewFrame?.origin.y as CGFloat!
+                
+            default:
+                closeButtonOriginY = 0
+                tableViewFrameY = 30
+            }
         }
         
         //updating closeButton frame
