@@ -94,7 +94,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             closeButton = UIButton.buttonWithType(.Custom) as? UIButton
         }
         closeButton.backgroundColor = UIColor.clearColor()
-        closeButton.setImage(closeImageButton, forState: .Normal)
+        closeButton.setImage(closeImageButton.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         closeButton.setTitle("", forState: .Normal)
         closeButton.addTarget(self, action: Selector("closeMenuFromController:"), forControlEvents:.TouchUpInside)
         
