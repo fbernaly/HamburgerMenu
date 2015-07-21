@@ -43,14 +43,11 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     private var doneAnimations = false
     private var doneCellAnimations = false
-    private var orientation = UIDeviceOrientation.Unknown
     private var currentController:UIViewController?
-    private var originalCurrentControllerFrame:CGRect?
     private var originalCloseButtonFrame:CGRect?
     private var originalTableViewFrame:CGRect?
     private var originalbuttonOriginY:CGFloat?
     private var offsetY:CGFloat?
-    
     
     // MARK: - Initializers
     
@@ -145,39 +142,9 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Rotation Methods
     
     @objc private func didRotate (notification: NSNotification ) {
-        let orientation = UIDevice.currentDevice().orientation
+        
         currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0)
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            if ((self.orientation == .Portrait &&
-                (orientation == .PortraitUpsideDown ||
-                    orientation == .LandscapeLeft ||
-                    orientation == .LandscapeRight)) ||
-                (orientation == .Portrait &&
-                    (self.orientation == .PortraitUpsideDown ||
-                        self.orientation == .LandscapeLeft ||
-                        self.orientation == .LandscapeRight))) {
-                            if let frame = originalCurrentControllerFrame {
-                                currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
-                            }
-            } else {
-                currentController?.view.frame = originalCurrentControllerFrame!
-            }
-        } else {
-            if (((self.orientation == .Portrait ||
-                self.orientation == .PortraitUpsideDown) &&
-                (orientation == .LandscapeLeft ||
-                    orientation == .LandscapeRight)) ||
-                ((orientation == .Portrait ||
-                    orientation == .PortraitUpsideDown) &&
-                    (self.orientation == .LandscapeLeft ||
-                        self.orientation == .LandscapeRight))) {
-                            if let frame = originalCurrentControllerFrame {
-                                currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
-                            }
-            } else {
-                currentController?.view.frame = originalCurrentControllerFrame!
-            }
-        }
+        currentController?.view.frame = UIScreen.mainScreen().bounds
         currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
         
         if containerViewWidthConstraint != nil {
@@ -190,6 +157,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         updateButtonConstraint()
+        
         tableView.setContentOffset(CGPointMake(0, 0), animated: false)
     }
     
@@ -260,8 +228,6 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         currentController = viewController
-        orientation = UIDevice.currentDevice().orientation
-        originalCurrentControllerFrame = viewController.view.frame
         
         if let navigationController = HMViewControllerManager.sharedInstance.navigationController {
             doneCellAnimations =  false
@@ -293,10 +259,10 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             }
                             self.tableView.reloadData()
                             }, completion: { (finished) -> Void in
+                                self.doneCellAnimations = true
                                 if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
                                     self.delegate?.didShowMenuViewController!(self, inViewController: viewController)
                                 }
-                                self.doneCellAnimations = true
                         })
                     })
             }
