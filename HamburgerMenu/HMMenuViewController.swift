@@ -16,8 +16,8 @@ enum HMCellMenuAnimation : Int {
 
 @objc protocol HMMenuViewControllerDelegate: NSObjectProtocol {
     func menuViewController (menuViewController:HMMenuViewController, didSelectItemAtIndex index:Int)
-    optional func didShowMenuViewController (menuViewController:HMMenuViewController,  inViewController viewController:UIViewController);
-    optional func didCloseMenuViewController (menuViewController:HMMenuViewController);
+    optional func didShowMenuViewController (menuViewController:HMMenuViewController,  inViewController viewController:UIViewController)
+    optional func didCloseMenuViewController (menuViewController:HMMenuViewController)
 }
 
 class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -26,6 +26,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
     @IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var buttonOriginYConstraint: NSLayoutConstraint!
     @IBOutlet var blurEffectView: UIVisualEffectView!
     
     var delegate: HMMenuViewControllerDelegate?
@@ -44,7 +45,12 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var doneCellAnimations = false
     private var orientation = UIDeviceOrientation.Unknown
     private var currentController:UIViewController?
-    private var frame:CGRect?
+    private var originalCurrentControllerFrame:CGRect?
+    private var originalCloseButtonFrame:CGRect?
+    private var originalTableViewFrame:CGRect?
+    private var originalbuttonOriginY:CGFloat?
+    private var offsetY:CGFloat?
+    
     
     // MARK: - Initializers
     
@@ -122,12 +128,15 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector:Selector("didRotate:"), name:"UIDeviceOrientationDidChangeNotification" , object:nil)
+        updateButtonContraint()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
+    // MARK: - Touch Methods
     
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         closeMenuFromController(self)
@@ -147,11 +156,11 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     (self.orientation == .PortraitUpsideDown ||
                         self.orientation == .LandscapeLeft ||
                         self.orientation == .LandscapeRight))) {
-                            if let frame = self.frame {
-                                self.currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
+                            if let frame = originalCurrentControllerFrame {
+                                currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
                             }
             } else {
-                self.currentController?.view.frame = frame!
+                currentController?.view.frame = originalCurrentControllerFrame!
             }
         } else {
             if (((self.orientation == .Portrait ||
@@ -162,16 +171,16 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     orientation == .PortraitUpsideDown) &&
                     (self.orientation == .LandscapeLeft ||
                         self.orientation == .LandscapeRight))) {
-                            if let frame = self.frame {
-                                self.currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
+                            if let frame = originalCurrentControllerFrame {
+                                currentController?.view.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.height, frame.size.width)
                             }
             } else {
-                self.currentController?.view.frame = frame!
+                currentController?.view.frame = originalCurrentControllerFrame!
             }
         }
         currentController?.view.transform  = CGAffineTransformScale(CGAffineTransformIdentity, 0.6, 0.6)
         
-        if let containerViewWidthConstraint = self.containerViewWidthConstraint {
+        if containerViewWidthConstraint != nil {
             if !slideContainerView {
                 containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
                 view.layoutIfNeeded()
@@ -179,43 +188,61 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         } else {
             updateFrames()
         }
+        
+        updateButtonContraint()
+        tableView.setContentOffset(CGPointMake(0, 0), animated: false)
     }
     
+    // MARK: - Update frames and constraints methods
+    
+    @objc private func updateButtonContraint () {
+        if buttonOriginYConstraint != nil {
+            originalbuttonOriginY = 26
+            if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIDevice.currentDevice().orientation != .Portrait {
+                originalbuttonOriginY = 0
+            }
+            buttonOriginYConstraint.constant = originalbuttonOriginY!
+            view.layoutIfNeeded()
+        }
+    }
+
     @objc private func updateFrames () {
         var closeButtonOriginY:CGFloat = 26
         var tableViewFrameY:CGFloat = 55
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && !((UIDevice.currentDevice().orientation == orientation && (UIDevice.currentDevice().orientation == .Portrait || UIDevice.currentDevice().orientation == .PortraitUpsideDown)) || UIDevice.currentDevice().orientation == .Portrait) {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIDevice.currentDevice().orientation != .Portrait {
             closeButtonOriginY = 0
             tableViewFrameY = 30
         }
         
         //updating closeButton frame
         closeButton.frame = CGRectMake(UIDevice.currentDevice().userInterfaceIdiom == .Phone ? 13 : 17, closeButtonOriginY, 30, 30)
+        originalCloseButtonFrame = closeButton.frame
         
         //updating containerView frame
-        if self.slideContainerView {
-            containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, view.frame.size.height)
+        if slideContainerView {
+            containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, UIScreen.mainScreen().bounds.size.height)
         } else {
-            containerView.frame = view.frame
+            containerView.frame = UIScreen.mainScreen().bounds
         }
         
         //updating blurEffectView frame
-        blurEffectView.frame = view.frame
+        blurEffectView.frame = UIScreen.mainScreen().bounds
         
         //updating tableView frame
-        tableView.frame =  CGRectMake(0, tableViewFrameY, view.frame.size.width, view.frame.size.height-tableViewFrameY)
+        tableView.frame =  CGRectMake(0, tableViewFrameY, containerView.frame.width, containerView.frame.height)
+        originalTableViewFrame = tableView.frame
     }
 
     // MARK: - Show & Close menu
 
     func showMenuFromController (viewController: UIViewController) {
         if doneAnimations {
-            return;
+            return
         }
         
         currentController = viewController
         orientation = UIDevice.currentDevice().orientation
-        frame = viewController.view.frame
+        originalCurrentControllerFrame = viewController.view.frame
         
         if let navigationController = HMViewControllerManager.sharedInstance.navigationController {
             doneCellAnimations =  false
@@ -224,7 +251,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }) { (finished) -> Void in
                     self.view.alpha = 0
                     navigationController.presentViewController(self, animated:false, completion: { () -> Void in
-                        if let frame = self.frame {
+                        if let frame = self.originalCurrentControllerFrame {
                             if let containerViewWidthConstraint = self.containerViewWidthConstraint {
                                 if self.slideContainerView {
                                     containerViewWidthConstraint.constant = self.minContainerViewWidth
@@ -240,7 +267,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
                             self.view.alpha = 1.0
                             self.doneAnimations = true
                             if self.slideContainerView {
-                                if let frame = self.frame {
+                                if let frame = self.originalCurrentControllerFrame {
                                     if let containerViewWidthConstraint = self.containerViewWidthConstraint {
                                         containerViewWidthConstraint.constant = self.maxContainerViewWidth
                                         self.view.layoutIfNeeded()
@@ -307,11 +334,11 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             cell = UITableViewCell(style:.Default, reuseIdentifier: cellIdentifier)
         }
         cell?.selectionStyle = .None
-        cell?.backgroundColor = UIColor.clearColor()
+        cell?.backgroundColor = UIColor.blueColor()
         cell?.textLabel?.backgroundColor = UIColor.clearColor()
         cell?.textLabel?.textColor = UIColor.whiteColor()
         cell?.textLabel?.textAlignment = .Left
-        cell?.imageView?.image = self.makeThumbnail((images.objectAtIndex(indexPath.row) as? UIImage)!, ofSize: CGSizeMake(40, 40)).imageWithRenderingMode(.AlwaysTemplate)
+        cell?.imageView?.image = makeThumbnail((images.objectAtIndex(indexPath.row) as? UIImage)!, ofSize: CGSizeMake(40, 40)).imageWithRenderingMode(.AlwaysTemplate)
         cell?.textLabel?.text = titles.objectAtIndex(indexPath.row) as? String
         return cell!
     }
@@ -381,13 +408,50 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return CGFloat(heightForRow)
     }
     
+    // MARK: - UIScrollView Delegate
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        offsetY = scrollView.contentOffset.y
+    }
+
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if buttonOriginYConstraint == nil {
+            var temp = tableView.frame
+            temp.origin.y += offsetY! - scrollView.contentOffset.y
+            if temp.origin.y < 0 {
+                temp.origin.y = 0
+            } else if temp.origin.y > originalTableViewFrame?.origin.y {
+                temp = originalTableViewFrame!
+            }
+            tableView.frame = temp
+            
+            temp = closeButton.frame
+            temp.origin.y += offsetY! - scrollView.contentOffset.y
+            if temp.origin.y + temp.size.width < 0 {
+                temp.origin.y = -1.0 * (originalCloseButtonFrame?.width as CGFloat!)
+            } else if temp.origin.y > originalCloseButtonFrame?.origin.y {
+                temp = originalCloseButtonFrame!
+            }
+            closeButton.frame = temp
+        } else {
+            buttonOriginYConstraint.constant += offsetY! - scrollView.contentOffset.y
+            if buttonOriginYConstraint.constant + closeButton.frame.size.width < 0 {
+                buttonOriginYConstraint.constant = -1.0 * closeButton.frame.size.width
+            } else if buttonOriginYConstraint.constant > originalbuttonOriginY {
+                buttonOriginYConstraint.constant = originalbuttonOriginY!
+            }
+            view.layoutIfNeeded()
+        }
+        offsetY = scrollView.contentOffset.y
+    }
+    
     // MARK: - Cell animations
     
     private func performSlideInCellAnimationsWithCell (cell:UITableViewCell, forRowIndexPath indexPath:NSIndexPath) {
         let oldFrame = cell.frame
         let newFrame = CGRectMake(-cell.frame.size.width, cell.frame.origin.y, 0, cell.frame.size.height)
         
-        cell.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.95, 0.0001);
+        cell.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.95, 0.0001)
         cell.frame = newFrame
         cell.alpha = 0
         
@@ -410,7 +474,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.frame = newFrame
         
         UIView.animateWithDuration(0.1, delay:0.2*Double(indexPath.row), usingSpringWithDamping:1.0, initialSpringVelocity:1.0, options:UIViewAnimationOptions(0), animations: { () -> Void in
-            cell.frame = oldFrame;
+            cell.frame = oldFrame
             cell.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.1)
             }) { (finished) -> Void in
                 UIView.animateWithDuration(0.1, delay:0, options:.CurveEaseIn, animations: { () -> Void in

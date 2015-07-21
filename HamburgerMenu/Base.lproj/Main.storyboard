@@ -80,6 +80,7 @@
                     </view>
                     <connections>
                         <outlet property="blurEffectView" destination="6FS-8r-46j" id="Soc-IV-IsA"/>
+                        <outlet property="buttonOriginYConstraint" destination="ugf-Ew-CeH" id="7Nq-AD-vbm"/>
                         <outlet property="closeButton" destination="mV4-7M-xny" id="Vvv-pD-rgh"/>
                         <outlet property="containerView" destination="Kzm-6m-iPb" id="UD8-Sj-5hC"/>
                         <outlet property="containerViewWidthConstraint" destination="Rfw-iQ-mA9" id="ICF-SB-Fyg"/>
