@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let manager = HMViewControllerManager.sharedInstance
         manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)
-        manager.closeMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!.imageWithRenderingMode(.AlwaysTemplate)
+        manager.closeMenuButtonImage = UIImage(named: "closeIcon")!.imageWithRenderingMode(.AlwaysTemplate)
         manager.titles = ["Home",
             "About Us",
             "Our Service",

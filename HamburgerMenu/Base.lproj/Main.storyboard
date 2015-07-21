@@ -29,13 +29,17 @@
                                 <rect key="frame" x="-4" y="0.0" width="608" height="600"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mV4-7M-xny">
-                                        <rect key="frame" x="20" y="29" width="46" height="30"/>
+                                        <rect key="frame" x="17" y="26" width="30" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="30" id="Vkm-bZ-Gcq"/>
+                                            <constraint firstAttribute="height" constant="30" id="mS8-4J-xJl"/>
+                                        </constraints>
                                         <state key="normal" title="Button">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="hAF-kf-GTV">
-                                        <rect key="frame" x="0.0" y="59" width="608" height="541"/>
+                                        <rect key="frame" x="0.0" y="56" width="608" height="544"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </tableView>
                                 </subviews>
@@ -43,12 +47,12 @@
                                 <constraints>
                                     <constraint firstItem="hAF-kf-GTV" firstAttribute="leading" secondItem="Kzm-6m-iPb" secondAttribute="leading" id="0mg-wB-9d8"/>
                                     <constraint firstAttribute="trailing" secondItem="hAF-kf-GTV" secondAttribute="trailing" id="7Ny-SF-EP9"/>
-                                    <constraint firstItem="mV4-7M-xny" firstAttribute="leading" secondItem="Kzm-6m-iPb" secondAttribute="leading" constant="20" id="LAJ-Ei-TMx"/>
+                                    <constraint firstItem="mV4-7M-xny" firstAttribute="leading" secondItem="Kzm-6m-iPb" secondAttribute="leading" constant="17" id="LAJ-Ei-TMx"/>
                                     <constraint firstAttribute="width" constant="608" id="Rfw-iQ-mA9"/>
                                     <constraint firstAttribute="bottom" secondItem="hAF-kf-GTV" secondAttribute="bottom" id="ZIW-Dx-qT5"/>
                                     <constraint firstItem="hAF-kf-GTV" firstAttribute="top" secondItem="mV4-7M-xny" secondAttribute="bottom" id="p5L-BA-7vA"/>
-                                    <constraint firstItem="mV4-7M-xny" firstAttribute="top" secondItem="Kzm-6m-iPb" secondAttribute="top" constant="29" id="ugf-Ew-CeH">
-                                        <variation key="heightClass=compact" constant="3"/>
+                                    <constraint firstItem="mV4-7M-xny" firstAttribute="top" secondItem="Kzm-6m-iPb" secondAttribute="top" constant="26" id="ugf-Ew-CeH">
+                                        <variation key="heightClass=compact" constant="0.0"/>
                                     </constraint>
                                 </constraints>
                             </view>
