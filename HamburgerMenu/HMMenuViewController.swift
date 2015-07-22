@@ -15,19 +15,19 @@ enum HMCellMenuAnimation : Int {
 }
 
 @objc protocol HMMenuViewControllerDelegate: NSObjectProtocol {
-    func menuViewController (menuViewController:HMMenuViewController, didSelectItemAtIndex index:Int)
+    func menuViewController (menuViewController:HMMenuViewController, didSelectItemAtIndexPath indexPath:NSIndexPath)
     optional func didShowMenuViewController (menuViewController:HMMenuViewController,  inViewController viewController:UIViewController)
     optional func didCloseMenuViewController (menuViewController:HMMenuViewController)
 }
 
 class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet var containerView: UIView!
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
-    @IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var buttonOriginYConstraint: NSLayoutConstraint!
-    @IBOutlet var blurEffectView: UIVisualEffectView!
+    @IBOutlet var containerView: UIView! // contains tableView and closeButton, added as a subView of self.view
+    @IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint! // used to animate containerView sliding
+    @IBOutlet weak var buttonOriginYConstraint: NSLayoutConstraint! // used to animate hiding closeButton when scrolling tableView up
+    @IBOutlet var blurEffectView: UIVisualEffectView! //used to add background blur effect
     
     var delegate: HMMenuViewControllerDelegate?
     var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
@@ -315,7 +315,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let completion: () -> () = {
             tableView.deselectRowAtIndexPath(indexPath, animated: false)
             self.closeMenuFromController(self)
-            self.delegate?.menuViewController(self, didSelectItemAtIndex: indexPath.row)
+            self.delegate?.menuViewController(self, didSelectItemAtIndexPath:indexPath)
         }
         if animateCellMenuTap {
             if let cell = tableView.cellForRowAtIndexPath(indexPath) {
