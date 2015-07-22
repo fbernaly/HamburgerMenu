@@ -72,7 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // HMMenuViewController using Storyboard
         manager.menuViewController = UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuController") as! HMMenuViewController
         if let navigationController = window?.rootViewController as? UINavigationController {
-            manager.navigationController = navigationController
             manager.viewControllers = NSArray(objects: navigationController.viewControllers.first!,
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),

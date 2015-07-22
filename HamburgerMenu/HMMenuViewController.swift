@@ -52,6 +52,19 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private var originalbuttonOriginY:CGFloat?
     private var offsetY:CGFloat?
     
+    // MARK: - Computed properties
+    
+    private var navController:UIViewController {
+        var controller = UIApplication.sharedApplication().keyWindow?.rootViewController
+        while controller?.presentedViewController != nil {
+            controller = controller?.presentedViewController
+        }
+        if controller == nil {
+            fatalError("UIApplication.sharedApplication().keyWindow?.rootViewController (navigationController) has not been set")
+        }
+        return controller!
+    }
+    
     // MARK: - Initializers
     
     init () {
@@ -221,30 +234,25 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         currentController = viewController
-        
-        if let navigationController = HMViewControllerManager.sharedInstance.navigationController {
-            doneCellAnimations =  false
-            UIView.animateWithDuration(0.15, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options:UIViewAnimationOptions(0), animations: { () -> Void in
-                self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
-                }) { (finished) -> Void in
-                    self.view.alpha = 0
-                    navigationController.presentViewController(self, animated:false, completion: { () -> Void in
+        doneCellAnimations =  false
+        UIView.animateWithDuration(0.15, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options:UIViewAnimationOptions(0), animations: { () -> Void in
+            self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
+            }) { (finished) -> Void in
+                self.view.alpha = 0
+                self.navController.presentViewController(self, animated:false, completion: { () -> Void in
+                    self.updateFrames()
+                    UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
+                        self.view.alpha = 1.0
+                        self.doneAnimations = true
                         self.updateFrames()
-                        UIView.animateWithDuration(0.35, delay:0.0, options:.CurveEaseInOut, animations: { () -> Void in
-                            self.view.alpha = 1.0
-                            self.doneAnimations = true
-                            self.updateFrames()
-                            self.tableView.reloadData()
-                            }, completion: { (finished) -> Void in
-                                self.doneCellAnimations = true
-                                if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
-                                    self.delegate?.didShowMenuViewController!(self, inViewController: viewController)
-                                }
-                        })
+                        self.tableView.reloadData()
+                        }, completion: { (finished) -> Void in
+                            self.doneCellAnimations = true
+                            if self.delegate?.respondsToSelector(Selector("didShowMenu:inViewController:")) == true {
+                                self.delegate?.didShowMenuViewController!(self, inViewController: viewController)
+                            }
                     })
-            }
-        } else {
-            fatalError("HMViewControllerManager.sharedInstance.navigationController has not been set")
+                })
         }
     }
     
@@ -258,7 +266,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }) { (finished) -> Void in
                 self.doneAnimations = false
                 self.tableView.reloadData()
-                HMViewControllerManager.sharedInstance.navigationController?.dismissViewControllerAnimated(false, completion: { () -> Void in
+                self.navController.dismissViewControllerAnimated(false, completion: { () -> Void in
                     if self.delegate?.respondsToSelector(Selector("didCloseMenu:")) == true {
                         self.delegate?.didCloseMenuViewController!(self)
                     }

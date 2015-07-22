@@ -12,7 +12,6 @@ class HMViewControllerManager: NSObject {
     
     static let sharedInstance = HMViewControllerManager()
     
-    var navigationController:UINavigationController?
     var menuViewController:UIViewController?
     var hamburgerMenuButtonImage:UIImage?
     var closeMenuButtonImage:UIImage?
