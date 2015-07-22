@@ -1,5 +1,17 @@
-# Hamburger Menu README...
-![](http://ezonlinemarketing.net/wp-content/uploads/2015/02/Under-construction.png)
+# Hamburger Menu
+
+`HMMenuViewController` is a fun, interactive, easy-to-use slide menu. As easy as instantiate, set images and titles, set delegate, call show method and ENJOY!!!
+
+### Features
+
+* Partial or full screen menu
+* Translucent (blur effect) background
+* Enable/disable scale background effect 
+* Enable/disable slide animation
+* Enable/disable cell animation
+* Enable/disable tap animation
+* Enable/disable closing menu after rotating device
+* Hiding close button when scrolling tableview up
 
 ### Screenshoots
 
