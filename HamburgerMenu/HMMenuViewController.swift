@@ -24,23 +24,24 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
-    @IBOutlet var containerView: UIView! // contains tableView and closeButton, added as a subView of self.view
-    @IBOutlet var blurEffectView: UIVisualEffectView! //used to add background blur effect
-    @IBOutlet var containerViewWidthConstraint: NSLayoutConstraint! // used to animate containerView sliding
-    @IBOutlet var closeButtonTopSpaceConstraint: NSLayoutConstraint! // used to animate hiding closeButton when scrolling tableView up
-    
-    var delegate: HMMenuViewControllerDelegate?
-    var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
-    var slideContainerView = true
-    var animateCellMenuTap = true
-    var viewcontrollerScaleTransformation = true
-    var closeMenuAfterRotation = false
-    var maxContainerViewWidth:CGFloat = 200
-    var scaleTransformation:CGFloat = 0.6
+    @IBOutlet var containerView: UIView!                                // contains tableView and closeButton, added as a subView of self.view
+    @IBOutlet var blurEffectView: UIVisualEffectView!                   // used to add background blur effect
+    @IBOutlet var containerViewWidthConstraint: NSLayoutConstraint!     // used to animate containerView sliding
+    @IBOutlet var closeButtonTopSpaceConstraint: NSLayoutConstraint!    // used to animate hiding closeButton when scrolling tableView up
     
     var images:NSArray!
     var titles:NSArray!
     var closeImageButton:UIImage!
+    var delegate: HMMenuViewControllerDelegate?
+    var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation       //Define menu cell animation
+    var partialContainerView = true                                     //false:containerView covers full screen, true:containerView covers partially
+    var animateContainerViewSliding = true                              //false:menu is presented whithout sliding animation, true:menu is presented whith sliding animation
+    var animateCellMenuTap = true                                       //false:no cell animation after tapping, true:cell animation after tapping
+    var viewcontrollerScaleTransformation = true                        //false:no currentController scale trasnformation, true: currentController scale trasnformation
+    var closeMenuAfterRotation = false                                  //false:view is Layout if needed after device rotation, true:menu is close after device rotation
+    var maxPartialContainerViewWidth:CGFloat = 200                      //Only valid when partialContainerView = true
+    var scaleTransformation:CGFloat = 0.6                               //Only valid when viewcontrollerScaleTransformation = true
+    
     private let minContainerViewWidth:CGFloat = 10
     private let heightForRow = 70
     
@@ -228,11 +229,11 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         //updating containerView frame
         if let containerViewWidthConstraint = self.containerViewWidthConstraint {
-            if slideContainerView {
-                containerViewWidthConstraint.constant = doneAnimations ? maxContainerViewWidth : minContainerViewWidth
-            } else {
-                containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
+            var maxContainerViewWidth = UIScreen.mainScreen().bounds.width + 20
+            if partialContainerView {
+                maxContainerViewWidth = maxPartialContainerViewWidth
             }
+            containerViewWidthConstraint.constant = animateContainerViewSliding ? (doneAnimations ? maxContainerViewWidth : minContainerViewWidth) : maxContainerViewWidth
         }
         
         view.layoutIfNeeded()
