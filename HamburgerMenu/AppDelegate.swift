@@ -16,9 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         window?.backgroundColor = UIColor.whiteColor()
-    
-        if let navigationController = window?.rootViewController as? HMNavigationController {
-            navigationController.transparency = true
+        
+        // Setting navigationBar transparency
+        if let navigationController = window?.rootViewController as? UINavigationController {
+            navigationController.navigationBar.setBackgroundImage(UIImage(), forBarMetrics:.Default)
+            navigationController.navigationBar.shadowImage = UIImage()
+            navigationController.navigationBar.translucent = true
+            navigationController.navigationBar.backgroundColor = UIColor.clearColor()
+            navigationController.view.backgroundColor = UIColor.clearColor()
         }
         
         let manager = HMViewControllerManager.sharedInstance
