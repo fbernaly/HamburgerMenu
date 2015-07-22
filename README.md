@@ -37,9 +37,9 @@ In this case just make sure to connect `@IBOutlet` before instantiating, and use
 @IBOutlet var tableView: UITableView!
 @IBOutlet var closeButton: UIButton!
 @IBOutlet var containerView: UIView! // contains tableView and closeButton, added as a subView of self.view
-@IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint! // used to animate containerView sliding
-@IBOutlet weak var buttonOriginYConstraint: NSLayoutConstraint! // used to animate hiding closeButton when scrolling tableView up
 @IBOutlet var blurEffectView: UIVisualEffectView! //used to add background blur effect
+@IBOutlet var containerViewWidthConstraint: NSLayoutConstraint! // used to animate containerView sliding
+@IBOutlet var closeButtonTopSpaceConstraint: NSLayoutConstraint! // used to animate hiding closeButton when scrolling tableView up
 ```
 
 Instantiate `HMMenuViewController` as follow:
