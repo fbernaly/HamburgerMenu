@@ -187,7 +187,7 @@
         <!--Navigation Controller-->
         <scene sceneID="Lxm-Zi-uFT">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RIw-JK-NQw" customClass="HMNavigationController" customModule="HamburgerMenu" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RIw-JK-NQw" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="vAv-Ya-YvD">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
