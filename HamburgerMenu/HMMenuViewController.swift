@@ -46,7 +46,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     private var doneAnimations = false
     private var doneCellAnimations = false
-    private var currentController:UIViewController?
+    private weak var currentController:UIViewController?
     private var originalCloseButtonFrame:CGRect?
     private var originalTableViewFrame:CGRect?
     private var originalbuttonOriginY:CGFloat?
