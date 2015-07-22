@@ -207,7 +207,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
-    @objc private func viewcontrollerWithScaleTransformation (scale: CGFloat) {
+    private func viewcontrollerWithScaleTransformation (scale: CGFloat) {
         if viewcontrollerScaleTransformation {
             currentController?.view.transform = CGAffineTransformIdentity
             currentController?.view.frame = UIScreen.mainScreen().bounds
@@ -217,7 +217,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     // MARK: - Update frames and constraints methods
     
-    @objc private func updateFrames () {
+    private func updateFrames () {
         //updating closeButton and tableView frames
         if closeButtonTopSpaceConstraint != nil {
             closeButtonTopSpace = 26
@@ -322,7 +322,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return cell!
     }
     
-    func makeThumbnail (image:UIImage,  ofSize size:CGSize) -> UIImage {
+    private func makeThumbnail (image:UIImage,  ofSize size:CGSize) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.mainScreen().scale)
         image.drawInRect(CGRectMake(0, 0, size.width, size.height))
         let temp =  UIGraphicsGetImageFromCurrentImageContext()
