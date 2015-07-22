@@ -1,6 +1,6 @@
 # Hamburger Menu
 
-`HMMenuViewController` is a fun, interactive, easy-to-use slide menu. As easy as instantiate, set images and titles, set delegate, call show method and ENJOY!!!
+`HMMenuViewController` is a fun, interactive, easy-to-use, customizable slide menu. As easy as instantiate, set images and titles, set delegate, call show method and ENJOY!!!
 
 ### Features
 
