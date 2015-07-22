@@ -25,9 +25,9 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var tableView: UITableView!
     @IBOutlet var closeButton: UIButton!
     @IBOutlet var containerView: UIView! // contains tableView and closeButton, added as a subView of self.view
-    @IBOutlet weak var containerViewWidthConstraint: NSLayoutConstraint! // used to animate containerView sliding
-    @IBOutlet weak var buttonOriginYConstraint: NSLayoutConstraint! // used to animate hiding closeButton when scrolling tableView up
     @IBOutlet var blurEffectView: UIVisualEffectView! //used to add background blur effect
+    @IBOutlet var containerViewWidthConstraint: NSLayoutConstraint! // used to animate containerView sliding
+    @IBOutlet var closeButtonTopSpaceConstraint: NSLayoutConstraint! // used to animate hiding closeButton when scrolling tableView up
     
     var delegate: HMMenuViewControllerDelegate?
     var cellMenuAnimation:HMCellMenuAnimation = .SlideInAnimation
@@ -44,12 +44,10 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private let minContainerViewWidth:CGFloat = 10
     private let heightForRow = 70
     
+    private weak var currentController:UIViewController?
     private var doneAnimations = false
     private var doneCellAnimations = false
-    private weak var currentController:UIViewController?
-    private var originalCloseButtonFrame:CGRect?
-    private var originalTableViewFrame:CGRect?
-    private var originalbuttonOriginY:CGFloat?
+    private var closeButtonTopSpace:CGFloat = 26
     private var offsetY:CGFloat?
     
     // MARK: - Computed properties
@@ -97,6 +95,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         // blurEffectView setup
         if blurEffectView == nil {
             blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light)) as UIVisualEffectView
+            blurEffectView.setTranslatesAutoresizingMaskIntoConstraints(false)
             blurEffectView.frame = view.bounds
             blurEffectView.alpha = 0.7
             view.addSubview(blurEffectView)
@@ -105,6 +104,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         // closeButton setup
         if closeButton == nil {
             closeButton = UIButton.buttonWithType(.Custom) as? UIButton
+            closeButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         }
         closeButton.backgroundColor = UIColor.clearColor()
         closeButton.setImage(closeImageButton.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
@@ -114,6 +114,7 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         //tableview setup
         if tableView == nil {
             tableView = UITableView()
+            tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         }
         tableView.backgroundColor = UIColor.clearColor()
         tableView.separatorStyle = .None
@@ -125,11 +126,53 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         // containerView setup
         if containerView ==   nil {
             containerView = UIView(frame: view.frame)
+            containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
             containerView.addSubview(tableView)
             containerView.addSubview(closeButton)
             view.addSubview(containerView)
         }
         containerView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        
+        // setting constraints programmatically
+        if containerView.constraints().count == 0 && closeButton.constraints().count == 0 && tableView.constraints().count == 0 && blurEffectView.constraints().count == 0 {
+            let views = ["containerView":containerView,"closeButton":closeButton,"tableView":tableView,"blurEffectView":blurEffectView]
+            let metrics = ["closeButtonSize":30.0, "closeButtonLeadingSpace":13.0, "closeButtonTopSpace":closeButtonTopSpace, "containerViewWidth":minContainerViewWidth]
+            
+            // containerView constraints
+            let containerViewConstraintsH:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[containerView(containerViewWidth)]", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            let containerViewConstraintsV:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-[containerView]-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            
+            view.addConstraints(containerViewConstraintsH as [AnyObject])
+            view.addConstraints(containerViewConstraintsV as [AnyObject])
+            
+            // containerView constraints
+            let blurEffectViewConstraintsH:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[blurEffectView]-0-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            let blurEffectViewConstraintsV:NSArray = NSLayoutConstraint.constraintsWithVisualFormat("V:|-[blurEffectView]-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            
+            view.addConstraints(blurEffectViewConstraintsH as [AnyObject])
+            view.addConstraints(blurEffectViewConstraintsV as [AnyObject])
+            
+            // closeButton and tableView constraints
+            let closeButtonConstraintsH:Array = NSLayoutConstraint.constraintsWithVisualFormat("H:|-closeButtonLeadingSpace-[closeButton(closeButtonSize)]", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            let closeButtonAndTableViewConstraintsV:Array = NSLayoutConstraint.constraintsWithVisualFormat("V:|-closeButtonTopSpace-[closeButton(closeButtonSize)]-0-[tableView]-0-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            let tableViewConstraintsH:Array = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[tableView]-0-|", options: NSLayoutFormatOptions(0), metrics: metrics, views: views)
+            
+            containerView.addConstraints(tableViewConstraintsH)
+            containerView.addConstraints(closeButtonConstraintsH)
+            containerView.addConstraints(closeButtonAndTableViewConstraintsV)
+            
+            for constraint in containerViewConstraintsH {
+                if constraint.constant == minContainerViewWidth {
+                    containerViewWidthConstraint = constraint as? NSLayoutConstraint
+                }
+            }
+            
+            for constraint in closeButtonAndTableViewConstraintsV {
+                if constraint.constant == closeButtonTopSpace {
+                    closeButtonTopSpaceConstraint = constraint as? NSLayoutConstraint
+                }
+            }
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -157,9 +200,9 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         tableView.setContentOffset(CGPointMake(0, 0), animated: false)
+        self.updateFrames()
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.05 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
             self.viewcontrollerWithScaleTransformation(self.scaleTransformation)
-            self.updateFrames()
         }
     }
     
@@ -174,50 +217,25 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Update frames and constraints methods
     
     @objc private func updateFrames () {
-        //updating closeButton and tableView frames when using Storyboard (buttonOriginYConstraint not nil)
-        if buttonOriginYConstraint != nil {
-            originalbuttonOriginY = 26
+        //updating closeButton and tableView frames
+        if closeButtonTopSpaceConstraint != nil {
+            closeButtonTopSpace = 26
             if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height {
-                originalbuttonOriginY = 0
+                closeButtonTopSpace = 0
             }
-            buttonOriginYConstraint.constant = originalbuttonOriginY!
-            view.layoutIfNeeded()
+            closeButtonTopSpaceConstraint.constant = closeButtonTopSpace
         }
         
+        //updating containerView frame
         if let containerViewWidthConstraint = self.containerViewWidthConstraint {
-            //updating containerView frame when using Storyboard (containerViewWidthConstraint not nil)
             if slideContainerView {
                 containerViewWidthConstraint.constant = doneAnimations ? maxContainerViewWidth : minContainerViewWidth
             } else {
                 containerViewWidthConstraint.constant = UIScreen.mainScreen().bounds.width + 20
             }
-            view.layoutIfNeeded()
-        } else {
-            var closeButtonOriginY:CGFloat = 26
-            var tableViewFrameY:CGFloat = 55
-            if UIDevice.currentDevice().userInterfaceIdiom == .Phone && UIScreen.mainScreen().bounds.width > UIScreen.mainScreen().bounds.height {
-                closeButtonOriginY = 0
-                tableViewFrameY = 30
-            }
-            
-            //updating closeButton frame
-            closeButton.frame = CGRectMake(UIDevice.currentDevice().userInterfaceIdiom == .Phone ? 13 : 17, closeButtonOriginY, 30, 30)
-            originalCloseButtonFrame = closeButton.frame
-            
-            //updating containerView frame
-            if slideContainerView {
-                containerView.frame = CGRectMake(0, 0, doneAnimations ? maxContainerViewWidth : minContainerViewWidth, UIScreen.mainScreen().bounds.size.height)
-            } else {
-                containerView.frame = UIScreen.mainScreen().bounds
-            }
-            
-            //updating blurEffectView frame
-            blurEffectView.frame = UIScreen.mainScreen().bounds
-            
-            //updating tableView frame
-            tableView.frame =  CGRectMake(0, tableViewFrameY, containerView.frame.width, containerView.frame.height)
-            originalTableViewFrame = tableView.frame
         }
+        
+        view.layoutIfNeeded()
     }
 
     // MARK: - Show & Close menu
@@ -375,30 +393,12 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        if buttonOriginYConstraint == nil {
-            var temp = tableView.frame
-            temp.origin.y += offsetY! - scrollView.contentOffset.y
-            if temp.origin.y < 0 {
-                temp.origin.y = 0
-            } else if temp.origin.y > originalTableViewFrame?.origin.y {
-                temp = originalTableViewFrame!
-            }
-            tableView.frame = temp
-            
-            temp = closeButton.frame
-            temp.origin.y += offsetY! - scrollView.contentOffset.y
-            if temp.origin.y + temp.size.width < 0 {
-                temp.origin.y = -1.0 * (originalCloseButtonFrame?.width as CGFloat!)
-            } else if temp.origin.y > originalCloseButtonFrame?.origin.y {
-                temp = originalCloseButtonFrame!
-            }
-            closeButton.frame = temp
-        } else {
-            buttonOriginYConstraint.constant += offsetY! - scrollView.contentOffset.y
-            if buttonOriginYConstraint.constant + closeButton.frame.size.width < 0 {
-                buttonOriginYConstraint.constant = -1.0 * closeButton.frame.size.width
-            } else if buttonOriginYConstraint.constant > originalbuttonOriginY {
-                buttonOriginYConstraint.constant = originalbuttonOriginY!
+        if closeButtonTopSpaceConstraint != nil {
+            closeButtonTopSpaceConstraint.constant += offsetY! - scrollView.contentOffset.y
+            if closeButtonTopSpaceConstraint.constant + closeButton.frame.size.width < 0 {
+                closeButtonTopSpaceConstraint.constant = -1.0 * closeButton.frame.size.width
+            } else if closeButtonTopSpaceConstraint.constant > closeButtonTopSpace {
+                closeButtonTopSpaceConstraint.constant = closeButtonTopSpace
             }
             view.layoutIfNeeded()
         }
