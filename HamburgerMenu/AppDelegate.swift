@@ -26,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navigationController.view.backgroundColor = UIColor.clearColor()
         }
         
+        // Setting HMViewControllerManager properties
         let manager = HMViewControllerManager.sharedInstance
         manager.hamburgerMenuButtonImage = UIImage(named: "hamburgerMenuIcon")!
         manager.closeMenuButtonImage = UIImage(named: "closeIcon")!
@@ -67,10 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIImage(named: "movie")!,
             UIImage(named: "paperclip")!,
             UIImage(named: "pen")!]
-        // HMMenuViewController NO using Storyboard
-        // manager.menuViewController = HMMenuViewController()
-        // HMMenuViewController using Storyboard
-        manager.menuViewController = UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuController") as! HMMenuViewController
+        
         if let navigationController = window?.rootViewController as? UINavigationController {
             manager.viewControllers = NSArray(objects: navigationController.viewControllers.first!,
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller2"),
@@ -92,6 +90,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller3"),
                 UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("Controller4"))
         }
+        
+        // Setting HMMenuViewController NOT using Storyboard
+//        let menuViewController = HMMenuViewController(images:manager.images!, titles:manager.titles!, closeImageButton:manager.closeMenuButtonImage!)
+        
+        // Setting HMMenuViewController using Storyboard
+        let menuViewController = UIStoryboard(name:"Main", bundle: nil).instantiateViewControllerWithIdentifier("MenuController") as! HMMenuViewController
+        menuViewController.images = manager.images
+        menuViewController.titles = manager.titles
+        menuViewController.closeImageButton = manager.closeMenuButtonImage
+        
+        // Setting HMViewControllerManager.menuViewController
+        manager.menuViewController = menuViewController
         
         return true
     }

@@ -38,9 +38,9 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var maxContainerViewWidth:CGFloat = 200
     var scaleTransformation:CGFloat = 0.6
     
-    private let images:NSArray
-    private let titles:NSArray
-    private let closeImageButton:UIImage
+    var images:NSArray!
+    var titles:NSArray!
+    var closeImageButton:UIImage!
     private let minContainerViewWidth:CGFloat = 10
     private let heightForRow = 70
     
@@ -67,13 +67,6 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     // MARK: - Initializers
     
-    init () {
-        self.images = HMViewControllerManager.sharedInstance.images!
-        self.titles = HMViewControllerManager.sharedInstance.titles!
-        self.closeImageButton = HMViewControllerManager.sharedInstance.closeMenuButtonImage!
-        super.init(nibName: nil, bundle: nil)
-    }
-    
     init (images:NSArray, titles:NSArray, closeImageButton:UIImage) {
         self.images = images
         self.titles = titles
@@ -82,9 +75,6 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     required init(coder aDecoder: NSCoder) {
-        self.images = HMViewControllerManager.sharedInstance.images!
-        self.titles = HMViewControllerManager.sharedInstance.titles!
-        self.closeImageButton = HMViewControllerManager.sharedInstance.closeMenuButtonImage!
         super.init(coder: aDecoder)
     }
     
@@ -92,6 +82,10 @@ class HMMenuViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if images == nil || titles == nil || closeImageButton == nil {
+            fatalError("\(self) - Some properties (images, titles, closeImageButton) have not been set")
+        }
         
         // view setup
         view.backgroundColor = UIColor.clearColor()
